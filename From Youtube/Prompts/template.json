@@ -1,0 +1,17 @@
+{
+    "name": null,
+    "input_variables": [
+        "length_input",
+        "paper",
+        "style"
+    ],
+    "optional_variables": [],
+    "output_parser": null,
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null,
+    "template": "Please summarise the research paper titled '{paper}' with the following specifications: Explanation Style: {style}Explanation Length: {length_input}1. Mathematical Details:-Include relevant mathematical equations if present in the paper-Explain the mathematical concepts clearly2.Analogies: Use relatable analogies to explain complex mathematical conceptsIf certain information is not avaiable in the paper then respond with 'Information Not Available instead of guessing. Ensure the summary is clear and concise",
+    "template_format": "f-string",
+    "validate_template": false,
+    "_type": "prompt"
+}
