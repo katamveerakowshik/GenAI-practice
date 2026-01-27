@@ -1,4 +1,5 @@
 from langchain_core.prompts import ChatPromptTemplate
+# ChatPrompt Template is used to create a dynamic list of messages for the prompt
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
