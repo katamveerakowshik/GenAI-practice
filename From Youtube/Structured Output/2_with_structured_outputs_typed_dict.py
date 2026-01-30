@@ -17,6 +17,6 @@ class Review(TypedDict):
 structured_llm = llm.with_structured_output(Review)
 response = structured_llm.invoke("The hardware is good, but the softeare feels bloated.There are too many preinstalled apps that I cannot remove. Also, the UI looks outdated when compred to other brands. Hoping for a new software update to fix this.")
 
-print(response)
-print(type(response))
-print(response["sentiment"])
+print(response) #It will be a dictionary
+print(type(response)) #dict
+print(response["sentiment"]) #neg
