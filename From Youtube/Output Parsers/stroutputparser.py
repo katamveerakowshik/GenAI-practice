@@ -16,6 +16,8 @@ template2 = PromptTemplate(
     input_variables = ["text"]
 )
 
+#stroutputparser just gives the raw text (result.content) but it is helpful to implement a chain
+#otherwise we need to write 2 different chains
 chain = template1 | llm | parser | template2 | llm | parser
 
 print(chain.invoke({"topic": "bloack hole"}))
