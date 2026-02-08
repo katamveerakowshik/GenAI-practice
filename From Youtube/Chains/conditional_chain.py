@@ -7,14 +7,18 @@ from pydantic import BaseModel, Field
 
 llm = ChatOllama(model="llama3.2")
 
+# Pydantic Validation
 class Feedback(BaseModel):
     sentiment: Literal["positive", "negative"] = Field(
         description="The sentiment of the review to be classified (positive, negative)."
     )
 
+#Parsers
 parser1 = StrOutputParser()
 parser2 = PydanticOutputParser(pydantic_object=Feedback)
 
+
+# prompts required
 prompt1 = PromptTemplate(
     template="""Given a feedback of the product {feedback},
 classify this feedback into either positive or negative. Only give the sentiment.
@@ -35,6 +39,7 @@ prompt3 = PromptTemplate(
 
 conditional_chain = prompt1 | llm | parser2
 
+# Runnable Chains, note that they are tuple, cause only one of them will be executed
 runnable_chain = RunnableBranch(
     (lambda x: x.sentiment == "positive", prompt2 | llm | parser1),
     (lambda x: x.sentiment == "negative", prompt3 | llm | parser1),
@@ -43,7 +48,7 @@ runnable_chain = RunnableBranch(
 
 chain = conditional_chain | runnable_chain
 
-# ✅ INVOKE THE FULL CHAIN
+# Invoking the chain
 result = chain.invoke(
     {"feedback": "The mobile phone is very bad, I don't recommend it to anyone"}
 )
