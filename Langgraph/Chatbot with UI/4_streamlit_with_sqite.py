@@ -2,7 +2,7 @@
 #********************************Importing necessary libraries and modules********************************
 import streamlit as st
 from langgraph_backend_2 import workflow, ChatState, generate_prev_threads, checkpointer
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 import uuid
 
 #***********************************Utility functions***********************************
@@ -80,9 +80,31 @@ if user_input:
             "run_name": "chat_turn"}
     
     input_state = ChatState(messages=[HumanMessage(user_input)])
+    
     with st.chat_message("ai"):
-        ai_messaege = st.write_stream(
-        message_chunk.content for message_chunk, metadata in workflow.stream(input_state, config=CONFG, stream_mode="messages")
-        )
+
+        status_holder = {"box": None}
+        def ai_only_stream():
+            for message_chunk, metadata in workflow.stream(input_state, config=CONFG, stream_mode="messages"):
+
+                #Check if the message is a tool message
+                if isinstance(message_chunk, ToolMessage):
+                    tool_name = getattr(message_chunk, "name", "tool")
+                    if status_holder["box"] is None:
+                        status_holder["box"] = st.status(
+                            f"Using {tool_name}", expanded=True
+                        )
+                    else:
+                        status_holder["box"].update(
+                            expanded=True, label = f"Using {tool_name}", state = "running")
+
+                #Check if the message is an AI message
+                if isinstance(message_chunk, AIMessage):
+                    yield message_chunk
+            
+        ai_messaege = st.write_stream(ai_only_stream())
+
+        if status_holder["box"] is not None:
+            status_holder["box"].update(label = "Tool finished", state = "complete", expanded = False)
         st.session_state.message_history.append({"role": "ai", "text": ai_messaege})
     
