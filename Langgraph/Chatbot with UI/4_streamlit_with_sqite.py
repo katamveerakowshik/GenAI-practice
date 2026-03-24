@@ -73,7 +73,12 @@ if user_input:
         st.text(user_input)
 
 
-    CONFG = {"configurable": {"thread_id": st.session_state.thread_id}}
+    CONFG = {"configurable": {"thread_id": st.session_state.thread_id},
+            
+            #It is to track traces using langsmith
+            "meta_data": {"thread_id": st.session_state.thread_id},
+            "run_name": "chat_turn"}
+    
     input_state = ChatState(messages=[HumanMessage(user_input)])
     with st.chat_message("ai"):
         ai_messaege = st.write_stream(
